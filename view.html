@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Light switcher</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            table { 
+                border-spacing: 10px;
+                border-collapse: collapse;
+            }
+            th{
+                text-align: left;
+            } 
+            td{
+                text-align: center;
+            } 
+        </style>
+    </head>
+    <body>
+        <h1>Light status at my home</h1>
+        <div id="result"></div>
+        <script>
+        
+            /* Start: KeepThisUnchaged */
+            var request = false;
+            if (window.XMLHttpRequest) {
+                request = new XMLHttpRequest();
+            }
+            else if (window.ActiveXObject) {
+                request = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+            /* End: KeepThisUnchaged */
+            
+            function loadApiData(url){
+                request.open("GET", url, true);
+                request.onreadystatechange = function(){
+                if(request.readyState == 4 && request.status == 200) {
+                    var obj = JSON.parse(request.responseText);
+                    
+                    var actualDataSize =(obj["data"]).length;
+      
+                        console.log("Actual Data Size: ");
+                        console.log(actualDataSize);
+                        
+                        var output = "";
+                        
+                        output += "<table>";
+                            output += "<tbody>";
+                                output += "<tr>";
+                                    output += "<th>Timestamp</th>";
+                                    output += "<th>light status</th>";
+                                output += "</tr>";
+                                //Parse the content to get line after line
+                                
+                                    for(k=actualDataSize-1; k>=0; k--){
+                                        var timestamp = obj["data"][k]["timestamp"];
+                                        var lightStatus = obj["data"][k]["light_status"];
+                                        
+                                        output += "<tr>";
+                                            output += "<td>"+timestamp+"</td>";
+                                            output += "<td>"+lightStatus+"</td>";
+                                        output += "</tr>";                        
+                                    }                
+                            output += "</tbody>";
+                        output += "</table>";                        
+                        
+                        document.getElementById("result").innerHTML = output;
+                    
+                  }
+                };
+                document.getElementById("result").innerHTML = "Loading...";
+                request.send();
+            }
+            
+            loadApiData("api.php");
+        
+        </script>
+    </body>
+</html>

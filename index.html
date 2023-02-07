@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            color: #fff;
+            background: #333;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+        }
+        .content {
+            text-align: center;
+        }
+        .mid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 2em;
+        }
+        .power{
+            display:flex;
+            flex-direction:row;
+        }
+        .button {
+            padding-top: 5em;
+        }
+        a{
+            font-size:1.4em;
+            text-decoration:none;
+            color:white;
+            background: green;
+            border-radius: 5px;
+            font-size: 16px;
+            padding: 1.5em;
+            margin-top:1em;
+        }
+        b {
+            color: green;
+        }
+        p {
+            padding: 25px;
+        }
+        label {
+            position: relative;
+            width: 150px;
+            height: 75px;
+            background: #212121;
+            border-radius: 10px;
+            box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.24);
+        }
+        label input {
+            appearance: none;
+        }
+        label span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 75px;
+            height: 75px;
+            background: #333;
+            border: 6px solid #212121;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: 0.5s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        label span ion-icon {
+            color: rgb(255, 255, 255, 0.15);
+            font-size: 2em;
+        }
+        label input:checked~span {
+            left: 75px;
+        }
+        label input:checked~span ion-icon {
+            color: rgb(255, 255, 255, 1);
+            filter: drop-shadow(0 0 5px #fff) drop-shadow(0 0 10px #fff) drop-shadow(0 0 15px #fff);
+        }
+    </style>
+    <title>Smart Switch</title>
+   
+</head>
+<body>
+    <div class="button">
+        <div class="content">
+            <h1>Smart Switch</h1>
+            <p>Status: <b id="lightStatus">ON</b></p>
+        </div>
+        <div class="mid">
+            <div class="power">
+            <label>
+                <input type="checkbox" id="switch" checked>
+                <span><ion-icon name="power-outline"></ion-icon></span>
+            </label>
+            </div>
+            <a href="/projects/4358b99ccf601a80b48163f403507691/LightSwitcher/view.html">View light status</a>
+            <script>
+            //fetch the light status
+            const res=fetch("/projects/4358b99ccf601a80b48163f403507691/LightSwitcher/buttonHandler.php",{
+                method:"GET",
+            }).then(res=>console.log(res))
+                var checkbox = document.getElementById("switch");
+                let lightStatus=document.getElementById("lightStatus");
+                let data="ON";
+                
+        // Add an onchange event listener to the checkbox
+        checkbox.addEventListener("change", async function() {
+        var status = checkbox.checked ? "checked" : "unchecked";
+        if(status=="checked"){
+            data="ON";
+            lightStatus.innerText="ON";
+        }
+        else{
+            data="OFF";
+            lightStatus.innerText="OFF";
+        
+        }
+        console.log(JSON.stringify({lightStatus: data}));
+          const resp=await fetch("/projects/4358b99ccf601a80b48163f403507691/LightSwitcher/buttonHandler.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "buttonStatus="+data
+          })
+          console.log(resp)
+        // Send the status of the checkbox to the server as a POST request
+        });
+              </script>
+        </div>
+    </div>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
